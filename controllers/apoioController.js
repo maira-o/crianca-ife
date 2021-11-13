@@ -1,3 +1,4 @@
+const Joi       = require('joi')
 const Usuario   = require('../models/Usuario');
 const Apoio     = require('../models/Apoio');
 
@@ -17,31 +18,37 @@ exports.novoApoio = async (req, res) => {
         const userLoggedId = '61873f5d6212a24abe8dd210' // >>> APAGAR <<<
 
         const { valor, pix, telefone, livro, criancaUsrId } = req.body
-        const newApoio = new Apoio({
+        const apoio = {
             valor:      valor,
             pix:        pix,
             telefone:   telefone,
             livro:      livro,
             educador:   userLoggedId,     // id do usuário logado (req.user._id)
             crianca:    criancaUsrId
-        })
+        }
 
-        console.log("newApoio")
-        console.log(newApoio)
-        const criancaExiste = await Usuario.findOne({ _id: newApoio.crianca, papel: 2 });
+        let { error } = await validaApoio(apoio);
+        if(error){
+            console.log("novoApoio > validaApoio > error >>>")
+            console.log(error.details[0].message)
+            // 406 Not Acceptable
+            return res.status(406).send({ status: 406, message: 'O objeto enviado é inválido (dados do apoio)' });
+        }
+
+        const criancaExiste = await Usuario.findOne({ _id: apoio.crianca, papel: 2 });
         if(!criancaExiste) {
             // 400 Bad Request
             return res.status(400).send({ status: 400, message: "Cadastro de usuário da criança não encontrado"});
         }
 
-        const educadorExiste = await Usuario.findOne({ _id: newApoio.educador, papel: 1 });
+        const educadorExiste = await Usuario.findOne({ _id: apoio.educador, papel: 1 });
         if(!educadorExiste) {
             // 400 Bad Request
             return res.status(400).send({ status: 400, message: "Cadastro de usuário do educador não encontrado"});
         }
-
-        const apoio = await newApoio.save();
-        res.status(200).json({ status: 200, message: "Apoio cadastrado com sucesso", apoio: apoio });
+        const newApoio = new Apoio(apoio)
+        const apoioRes = await newApoio.save();
+        res.status(200).json({ status: 200, message: "Apoio cadastrado com sucesso", apoio: apoioRes });
     } catch (err){
         console.log("novoApoio > err >>>")
         console.log(err)
@@ -75,6 +82,18 @@ exports.inativaApoio = async (req, res) => {
         console.log("inativaApoio > err >>>")
         console.log(err)
         // 500 Internal Server Error
-        res.status(500).send({ status: 500, message: "Erro ao excluir apoio" });
+        res.status(500).send({ status: 500, message: "Erro ao excluir apoio", error: err });
     }
+}
+
+const validaApoio = (apoio) => {
+    const schema = Joi.object({
+        valor:      Joi.number().required(),
+        pix:        Joi.string().required(),
+        telefone:   Joi.string().min(12).max(15).required(),
+        livro:      Joi.string().required(),
+        educador:   Joi.string().required(),
+        crianca:    Joi.string().required()
+    });
+    return schema.validate(apoio);
 }
