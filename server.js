@@ -14,7 +14,8 @@ app.use(cors())
 app.use(morgan('dev'));
 
 //Importing routes
-const criancaRoute = require('./routes/crianca');
+const criancaRoute  = require('./routes/crianca');
+const apoioRoute    = require('./routes/apoio');
 
 mongoose.connect(
   process.env.DB_CONNECT, 
@@ -24,7 +25,8 @@ mongoose.connect(
 });
 
 //Make routes available
-app.use('/',  criancaRoute);
+app.use('/',      criancaRoute);
+app.use('/apoio', apoioRoute);
 
 const port = process.env.PORT;
 

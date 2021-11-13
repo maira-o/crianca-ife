@@ -13,7 +13,7 @@ exports.buscaReduzidaCrianca = async (req, res) => {
         // 200 OK
         res.status(200).json({ status: 200, message: "Sucesso", educador: educador });
     } catch (err){
-        console.log("buscaReduzidaEducador > err >>>")
+        console.log("buscaReduzidaCrianca > err >>>")
         console.log(err)
         // 500 Internal Server Error
         res.status(500).send({ status: 500, message: "Erro ao buscar Educador" });
@@ -27,15 +27,10 @@ exports.novaCrianca = async (req, res) => {
         const usuario = req.body.usuario;
         const crianca = req.body.crianca;
 
-        const usuarioExiste = await Usuario.findOne({ _id: usuario._id });
+        const usuarioExiste = await Usuario.findOne({ _id: usuario._id, papel: 2 });
         if(!usuarioExiste) {
             // 400 Bad Request
-            return res.status(400).send({ status: 400, message: "Usuário não encontrado"});
-        }
-
-        if(usuarioExiste.papel !== 2) {
-            // 400 Bad Request
-            return res.status(400).send({ status: 400, message: "Usuário não é criança"});
+            return res.status(400).send({ status: 400, message: "Cadastro de usuário da criança não encontrado"});
         }
 
         const educadorExiste = await Educador.findOne({ usuario: crianca.educadorUsrId });
@@ -63,9 +58,9 @@ exports.novaCrianca = async (req, res) => {
         });
 
         const criancaRes = await newCrianca.save();
-        res.status(200).json({ status: 200, message: "Crianca cadastrado com sucesso", crianca: criancaRes });
+        res.status(200).json({ status: 200, message: "Crianca cadastrada com sucesso", crianca: criancaRes });
     } catch (err){
-        console.log("novoCrianca > err >>>")
+        console.log("novaCrianca > err >>>")
         console.log(err)
         // 500 Internal Server Error
         res.status(500).send({ status: 500, message: "Erro ao registrar crianca", error: err });
