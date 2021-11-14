@@ -4,7 +4,16 @@ const Apoio     = require('../models/Apoio');
 
 exports.buscaApoios = async (req, res) => {
     try {
-        let apoios = await Apoio.find({ isActive: true }).sort({ createAt: 'asc' }).exec();
+        const apoios = await Apoio.find({ isActive: true }).sort({ createAt: 'asc' }).exec();
+        if(!apoios){
+            // 204 No Content
+            return res.status(204).send({ status: 204, message: 'Não existem solicitações de apoio no momento' });
+        }
+        if(apoios.length === 0){
+            // 204 No Content
+            return res.status(204).send({ status: 204, message: 'Não existem solicitações de apoio no momento' });
+        }
+        
         res.status(200).json({ status: 200, message: "Sucesso", apoios: apoios });
     } catch (err){
         console.log("buscaApoios > err >>>")
@@ -64,8 +73,8 @@ exports.inativaApoio = async (req, res) => {
 
         const educadorExiste = await Usuario.findOne({ _id: userLoggedId, papel: 1 }).exec(); // id do usuário logado (req.user._id)
         if(!educadorExiste){
-            // 204 No Content
-            return res.status(204).send({ status: 204, message: 'Educador não encontrado' });
+            // 400 Bad Request
+            return res.status(400).send({ status: 400, message: 'Educador não encontrado' });
         }
 
         let apoioExiste = await await Apoio.findOne({ _id: req.params.id, educador: userLoggedId }).exec(); // id do usuário logado (req.user._id)

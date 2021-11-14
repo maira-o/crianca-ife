@@ -9,7 +9,7 @@ exports.buscaReduzidaCrianca = async (req, res) => {
         const crianca = await Crianca.findOne({ usuario: criancaUsrId }).exec();
         if(!crianca){
             // 204 No Content
-            return res.status(204).send({ status: 204, message: 'Criança não encontrado' });
+            return res.status(204).send({ status: 204, message: 'Criança não encontrada' });
         }
         // 200 OK
         res.status(200).json({ status: 200, message: "Sucesso", crianca: crianca });
@@ -26,6 +26,10 @@ exports.buscaCriancasEducador = async (req, res) => {
     try {
         const criancasReduzido = await Crianca.find({ educador: educadorUsrId }).sort({ cidade: 'asc' }).exec();
         if(!criancasReduzido){
+            // 204 No Content
+            return res.status(204).send({ status: 204, message: 'Crianças não encontradas' });
+        }
+        if(criancasReduzido.length === 0){
             // 204 No Content
             return res.status(204).send({ status: 204, message: 'Crianças não encontradas' });
         }

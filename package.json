@@ -12,7 +12,7 @@
     "type": "git",
     "url": "git+https://github.com/maira-o/crianca-ife.git"
   },
-  "author": "",
+  "author": "Gabriel Senna da Rosa",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/maira-o/crianca-ife/issues"
@@ -26,7 +26,9 @@
     "joi": "^17.4.2",
     "mongoose": "^6.0.12",
     "mongoose-hidden": "^1.9.1",
-    "morgan": "^1.10.0",
+    "morgan": "^1.10.0"
+  },
+  "devDependencies": {
     "nodemon": "^2.0.15"
   }
 }
