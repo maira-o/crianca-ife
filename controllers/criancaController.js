@@ -22,8 +22,8 @@ exports.buscaReduzidaCrianca = async (req, res) => {
 }
 
 exports.buscaCriancasEducador = async (req, res) => {
-    educadorUsrId = req.params.id
     try {
+        const educadorUsrId = req.params.id
         const criancasReduzido = await Crianca.find({ educador: educadorUsrId }).sort({ cidade: 'asc' }).exec();
         if(!criancasReduzido){
             // 204 No Content

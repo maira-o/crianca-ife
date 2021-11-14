@@ -77,7 +77,7 @@ exports.inativaApoio = async (req, res) => {
             return res.status(400).send({ status: 400, message: 'Educador não encontrado' });
         }
 
-        let apoioExiste = await await Apoio.findOne({ _id: req.params.id, educador: userLoggedId }).exec(); // id do usuário logado (req.user._id)
+        let apoioExiste = await Apoio.findOne({ _id: req.params.id, educador: userLoggedId }).exec(); // id do usuário logado (req.user._id)
         if(!apoioExiste){
             // 204 No Content
             return res.status(204).send({ status: 204, message: 'Apoio não encontrado ou não pertence ao educador' });
