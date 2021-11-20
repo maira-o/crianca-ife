@@ -24,7 +24,8 @@ exports.buscaApoios = async (req, res) => {
 
 exports.novoApoio = async (req, res) => {
     try {
-        const userLoggedId = '61873f5d6212a24abe8dd210' // >>> APAGAR <<<
+        // const userLoggedId = '61873f5d6212a24abe8dd210' // >>> APAGAR <<<
+        const userLoggedId = req.headers.userid
 
         const { valor, pix, telefone, livro, criancaUsrId } = req.body
         const apoio = {
