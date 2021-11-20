@@ -25,8 +25,8 @@ mongoose.connect(
 });
 
 //Make routes available
-app.use('/',      criancaRoute);
-app.use('/apoio', apoioRoute);
+app.use('/crianca',      criancaRoute);
+app.use('/crianca/apoio', apoioRoute);
 
 const port = process.env.PORT;
 
