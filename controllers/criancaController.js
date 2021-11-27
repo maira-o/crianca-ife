@@ -1,6 +1,7 @@
 const Usuario           = require('../models/Usuario');
 const Educador          = require('../models/Educador');
 const Crianca           = require('../models/Crianca');
+const Apoio             = require('../models/Apoio');
 const usuarioService    = require('../services/usuario');
 
 exports.buscaReduzidaCrianca = async (req, res) => {
@@ -91,6 +92,36 @@ exports.novaCrianca = async (req, res) => {
     }
 }
 
+exports.apagaCrianca = async (req, res) => {
+    criancaUsrId = req.params.id
+    try {
+        await Crianca.findOneAndDelete({ usuario: criancaUsrId }).exec();
+        await Apoio.deleteMany({ crianca: criancaUsrId }).exec()
+        // 200 OK
+        res.status(200).json({ status: 200, message: "Sucesso" });
+    } catch (err){
+        console.log("apagaCrianca > err >>>")
+        console.log(err)
+        // 500 Internal Server Error
+        res.status(500).send({ status: 500, message: "Erro ao apagar Criança" });
+    }
+}
+
+exports.apagaCriancasEducador = async (req, res) => {
+    educadorUsrId = req.params.id
+    try {
+        await Crianca.deleteMany({ educador: educadorUsrId }).exec();
+        await Apoio.deleteMany({ educador: educadorUsrId }).exec()
+        // 200 OK
+        res.status(200).json({ status: 200, message: "Sucesso" });
+    } catch (err){
+        console.log("apagaCriancasEducador > err >>>")
+        console.log(err)
+        // 500 Internal Server Error
+        res.status(500).send({ status: 500, message: "Erro ao apagar Crianças" });
+    }
+}
+
 const completaCriancas = async (incompletas) => {
     let completas = []
     for (var i = 0; i < incompletas.length; i++) {  // >>> FOR funciona <<<
@@ -101,24 +132,3 @@ const completaCriancas = async (incompletas) => {
     }
     return completas
 }
-
-/*     let completos = []
-    await incompletos.forEach(                      // >>> FOREACH não funciona <<<
-        async (crianca) => {
-            let result      = await usuarioService.buscaReduzidaUsuario(crianca.usuario)
-            result          = result.data.usuario
-            result.crianca  = crianca
-            completos.push(result)
-        }
-    )
-    return await completos */
-
-
-/*     return await incompletos.map(                // >>> MAP não funciona <<<
-        async (crianca) => {
-            let result      = await usuarioService.buscaReduzidaUsuario(crianca.usuario)
-            result          = result.data.usuario
-            result.crianca  = crianca
-            return await result
-        }
-    ) */
