@@ -47,8 +47,6 @@ exports.buscaCriancasEducador = async (req, res) => {
 
 exports.novaCrianca = async (req, res) => {
     try {
-        console.log("req.body >>>")
-        console.log(req.body)
         const usuario = req.body.usuario;
         const crianca = req.body.crianca;
 
